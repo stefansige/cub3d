@@ -1,9 +1,9 @@
 NAME = so_long
 CC = gcc
-CFLAGS = 
+CFLAGS =
 LDLIBS = -L./minilibx-linux -lmlx_Linux -lXext -lX11 -lm
 INCLUDES = -I./minilibx-linux
-SRC = cubed.c
+SRC = ccubed.c
 
 OBJ = $(SRC:.c=.o)
 

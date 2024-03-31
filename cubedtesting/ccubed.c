@@ -12,7 +12,7 @@ int worldMap[mapWidth][mapHeight]=
   {1,1,1,3,1,1,1},
   {1,0,0,0,0,0,1},
   {1,0,0,0,0,0,1},
-  {1,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2},
   {1,0,0,0,0,0,1},
   {1,0,0,0,0,0,1},
   {1,1,1,2,1,1,1}
@@ -43,11 +43,11 @@ int main()
     mlx_ptr = mlx_init();
     win_ptr = mlx_new_window(mlx_ptr, screenWidth, screenHeight, "Raycaster");
 
-   
+
 
 	double posX = 3, posY = 3;      // x and y start position
 	double dirX = 1, dirY = 0;     // initial direction vector (facing west)
-	double planeX = 0, planeY = 0.66;  // the 2D raycaster version of camera plane
+	double planeX = 0, planeY = 0;  // the 2D raycaster version of camera plane
 
 
     while(1)
