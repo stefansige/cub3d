@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/so_long", // Replace 'your_executable' with the name of your compiled executable file
+            "args": [], // Add command-line arguments if your program requires any
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb", // Path to your GDB executable
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
