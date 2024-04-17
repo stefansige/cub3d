@@ -18,9 +18,23 @@ typedef struct s_player {
     int dir;
 }              t_player;
 
+typedef struct s_image {
+    void *img;
+    char *addr;
+    int bits_per_pixel;
+    int line_length;
+    int endian;
+    int img_width;
+    int img_height;
+}              t_image;
+
 typedef struct s_vars {
     void *mlx;
     void *win;
+    t_image north;
+    t_image south;
+    t_image east;
+    t_image west;
     t_player player;
 }              t_vars;
 
@@ -162,12 +176,50 @@ int ft_key(int keycode, t_vars *vars)
     return (0);
 }
 
-void ft_display(t_vars *vars, double raydist, int x)
+void ft_display(t_vars *vars, double raydist, t_ray *ray, int raynum)
 {
     int linelen = round(100000 / raydist);
     int y_start = 400 - (linelen / 2); 
     int y_end = 400 + (linelen / 2);   
+    unsigned int color;
 
+    float xadd = 0;
+    float yadd = 0;
+
+    int x = 0;
+    int y = 0;
+    int i = raynum * 10;
+
+    if (ray->pos.x % 100 == 0)
+    {
+        if (ray->dir < 90 || ray->dir > 270)
+        {
+            xadd = (float)vars->east.img_width / linelen;
+            yadd = (float)vars->east.img_height / linelen;
+            x = (ray->pos.y % 100) * xadd;
+            while (i < raynum * 10 + 10)
+            {
+                for (int j = y_start; j < y_end; j++)
+                    {
+                        mlx_pixel_put(vars->mlx, vars->win, i, j, vars->east.addr[x * vars->east.bits_per_pixel / 8 + y * vars->east.line_length]);
+                        y = round((float)y + yadd);
+                    }
+                x = round((float)x + xadd);
+                i++;
+            }
+        }
+        else
+        {
+
+        }
+    }
+    else
+    {
+
+    }
+
+
+    /*
     int i = x * 10;
 
     while (i < x * 10 + 10)
@@ -178,6 +230,7 @@ void ft_display(t_vars *vars, double raydist, int x)
         }
         i++;
     }
+    */
 }
 
 int ft_rays(t_vars *vars)
@@ -304,8 +357,7 @@ int ft_rays(t_vars *vars)
             }
             ray.planeangle = angleDifference(vars->player.dir, ray.dir);
             perpwalldist = hip * cos(torad(ray.planeangle));
-            ft_display(vars, perpwalldist, i);
-            printf("ray: %d, x: %d, y: %d, hip: %f, dist: %f\n", ray.dir, ray.pos.x, ray.pos.y, hip, perpwalldist);
+            ft_display(vars, perpwalldist, &ray, i);
         }
     return (0);
 }
@@ -316,10 +368,24 @@ int main(void)
 
     vars.player.pos.x = 500;
     vars.player.pos.y = 500;
-    vars.player.dir = 135;
+    vars.player.dir = 0;
 
     vars.mlx = mlx_init();
     vars.win = mlx_new_window(vars.mlx, 800, 800, "cuba");
+    vars.north.img = mlx_xpm_file_to_image(vars.mlx, "./textures/north.xpm", &vars.north.img_width, &vars.north.img_height);
+    vars.south.img = mlx_xpm_file_to_image(vars.mlx, "./textures/south.xpm", &vars.south.img_width, &vars.south.img_height);
+    vars.east.img = mlx_xpm_file_to_image(vars.mlx, "./textures/east.xpm", &vars.east.img_width, &vars.east.img_height);
+    vars.west.img = mlx_xpm_file_to_image(vars.mlx, "./textures/west.xpm", &vars.west.img_width, &vars.west.img_height);
+    if (vars.north.img == NULL || vars.south.img == NULL || vars.east.img == NULL || vars.west.img == NULL)
+    {
+        printf("Invalid map\n");
+        exit(0);
+    }
+    vars.north.addr = mlx_get_data_addr(vars.north.img, &vars.north.bits_per_pixel, &vars.north.line_length, &vars.north.endian);
+    vars.south.addr = mlx_get_data_addr(vars.south.img, &vars.south.bits_per_pixel, &vars.south.line_length, &vars.south.endian);
+    vars.east.addr = mlx_get_data_addr(vars.east.img, &vars.east.bits_per_pixel, &vars.east.line_length, &vars.east.endian);
+    vars.west.addr = mlx_get_data_addr(vars.west.img, &vars.west.bits_per_pixel, &vars.west.line_length, &vars.west.endian);
+    
     /*
     draw_line(vars.player.pos.x - 50, vars.player.pos.y, vars.player.pos.x + 50 , vars.player.pos.y, &vars, GREEN);
     draw_line(vars.player.pos.x, vars.player.pos.y - 50, vars.player.pos.x, vars.player.pos.y + 50, &vars, GREEN);
