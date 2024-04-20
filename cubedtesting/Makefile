@@ -1,7 +1,7 @@
 NAME = so_long
 CC = gcc
 CFLAGS = -g
-LDLIBS = -L./minilibx-linux -lmlx_Linux -lXext -lX11 -lm 
+LDLIBS = -L./minilibx-linux -lmlx_Linux -lXext -lX11 -lm
 INCLUDES = -I./minilibx-linux
 SRC = cubed.c
 

@@ -15,7 +15,7 @@ typedef struct s_point {
     double y;
 }              t_point;
 
-typedef struct s_player 
+typedef struct s_player
 {
     t_point pos;
     int dir;
@@ -185,27 +185,42 @@ promeni da pos bude double mora zbog preciznosti sa coskovima
 void ft_display(t_vars *vars, double raydist, t_ray *ray, int raynum, int orientation)
 {
     int linelen = round(100000 / raydist);
-    int y_start = 400 - (linelen / 2); 
-    int y_end = 400 + (linelen / 2);   
-
+    unsigned int y_start = 400 - (linelen / 2);
+    unsigned int y_end = 400 + (linelen / 2);
+    if (y_start < 0)
+        y_start = 0;
+    else if (y_end > 800)
+        y_end = 800;
+    t_image *img;
+    int scale;
 
     int start = raynum * 10;
     int end = raynum * 10 + 10;
     int color = RED;
 
-    if (orientation == 0)
+    if (orientation == 1)
     {
-        if (ray->dir < 90 || ray->dir > 270)
-            color = GREEN;
-        else
-            color = BLUE;
+        img = &vars->north;
     }
+    else if (orientation == 3)
+    {
+        img = &vars->south;
+    }
+    else if (orientation == 4)
+    {
+        img = &vars->west;
+    }
+    else if (orientation == 2)
+    {
+        img = &vars->east;
+    }
+    scale = img->img_height / linelen;
     while (start < end)
     {
-
         for (int j = y_start; j < y_end; j++)
         {
-                mlx_pixel_put(vars->mlx, vars->win, start, j, color);
+            color = *(unsigned int *)(img->addr + (int)(j * img->line_length) + (start * (img->bits_per_pixel / 8)));
+            mlx_pixel_put(vars->mlx, vars->win, start, j, color);
         }
         start++;
     }
@@ -225,12 +240,12 @@ int ft_rays(t_vars *vars)
     double perpwalldist;
     int orientation;
 
-    for (int i = 0; i < 80; i++) 
+    for (int i = 0; i < 80; i++)
         {
-            
+
             dir = vars->player.dir - 40 + i;
 
-            
+
             dir = ft_fixangle(dir);
             ray.dir = dir;
             ray.pos.x = vars->player.pos.x;
@@ -249,15 +264,31 @@ int ft_rays(t_vars *vars)
                         {
                             ray.pos.x += rx;
                             ray.pos.y += hipx * fabs(sin(torad(ray.dir)));
-                            if (worldMap[(int)ray.pos.x / 100][(int)ray.pos.y / 100] == 1)
+                            if (worldMap[((int)ray.pos.x - 1) / 100][(int)ray.pos.y / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 3;
+                            }
+                            else if (worldMap[(int)ray.pos.x / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 2;
+                            }
                         }
                         else
                         {
                             ray.pos.y += ry;
                             ray.pos.x += hipy * fabs(cos(torad(ray.dir)));
-                            if (worldMap[(int)ray.pos.x / 100][(int)ray.pos.y / 100] == 1)
+                            if (worldMap[((int)ray.pos.x - 1) / 100][(int)ray.pos.y / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 3;
+                            }
+                            else if (worldMap[(int)ray.pos.x / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 2;
+                            }
                         }
                 }
                 else if (ray.dir < 180)
@@ -272,15 +303,31 @@ int ft_rays(t_vars *vars)
                         {
                             ray.pos.x -= rx;
                             ray.pos.y += hipx * fabs(sin(torad(180 - ray.dir)));
-                            if (worldMap[((int)ray.pos.x - 1) / 100][(int)ray.pos.y / 100] == 1)
+                            if (worldMap[((int)ray.pos.x - 1) / 100][(int)(ray.pos.y - 1) / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 4;
+                            }
+                            else if (worldMap[((int)ray.pos.x) / 100][(int)ray.pos.y / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 3;
+                            }
                         }
                         else
                         {
                             ray.pos.y += ry;
                             ray.pos.x -= hipy * fabs(cos(torad(180 - ray.dir)));
-                            if (worldMap[((int)ray.pos.x - 1) / 100][(int)ray.pos.y / 100] == 1)
+                            if (worldMap[((int)ray.pos.x - 1) / 100][(int)(ray.pos.y - 1) / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 4;
+                            }
+                            else if (worldMap[((int)ray.pos.x) / 100][(int)ray.pos.y / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 3;
+                            }
                         }
                 }
                 else if (ray.dir < 270)
@@ -297,15 +344,31 @@ int ft_rays(t_vars *vars)
                         {
                             ray.pos.x -= rx;
                             ray.pos.y -= hipx * fabs(sin(torad(ray.dir - 180)));
-                            if (worldMap[((int)ray.pos.x - 1) / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            if (worldMap[((int)ray.pos.x - 1) / 100][((int)ray.pos.y) / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 4;
+                            }
+                            else if (worldMap[((int)ray.pos.x) / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 1;
+                            }
                         }
                         else
                         {
                             ray.pos.y -= ry;
                             ray.pos.x -= hipy * fabs(cos(torad(ray.dir - 180)));
-                            if (worldMap[((int)ray.pos.x - 1) / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            if (worldMap[((int)ray.pos.x - 1) / 100][((int)ray.pos.y) / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 4;
+                            }
+                            else if (worldMap[((int)ray.pos.x) / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 1;
+                            }
                         }
                 }
                 else
@@ -320,15 +383,31 @@ int ft_rays(t_vars *vars)
                         {
                             ray.pos.x += rx;
                             ray.pos.y -= hipx * sin(torad(360 - ray.dir));
-                            if (worldMap[(int)ray.pos.x / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            if (worldMap[(int)ray.pos.x / 100][((int)ray.pos.y) / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 2;
+                            }
+                            else if (worldMap[(int)(ray.pos.x - 1) / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 1;
+                            }
                         }
                         else
                         {
                             ray.pos.y -= ry;
                             ray.pos.x += hipy * cos(torad(360 - ray.dir));
-                            if (worldMap[(int)ray.pos.x / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            if (worldMap[(int)ray.pos.x / 100][((int)ray.pos.y) / 100] == 1)
+                            {
                                 hit = 1;
+                                orientation = 2;
+                            }
+                            else if (worldMap[(int)(ray.pos.x - 1) / 100][((int)ray.pos.y - 1) / 100] == 1)
+                            {
+                                hit = 1;
+                                orientation = 1;
+                            }
                         }
                 }
                 if (hipx <= hipy)
@@ -338,14 +417,8 @@ int ft_rays(t_vars *vars)
             }
             ray.planeangle = angleDifference(vars->player.dir, ray.dir);
             perpwalldist = hip * cos(torad(ray.planeangle));
-            if (hipx <= hipy)
-                orientation = 0;
-            else
-                orientation = 1;
             ft_display(vars, perpwalldist, &ray, i, orientation);
-            printf("ray: %d, dir: %d, x: %f, y: %f, hipx: %f, hipy: %f orientation: %d\n", i, ray.dir, ray.pos.x, ray.pos.y, hipx, hipy, orientation);
         }
-        exit(0);
     return (0);
 }
 
@@ -372,7 +445,7 @@ int main(void)
     vars.south.addr = mlx_get_data_addr(vars.south.img, &vars.south.bits_per_pixel, &vars.south.line_length, &vars.south.endian);
     vars.east.addr = mlx_get_data_addr(vars.east.img, &vars.east.bits_per_pixel, &vars.east.line_length, &vars.east.endian);
     vars.west.addr = mlx_get_data_addr(vars.west.img, &vars.west.bits_per_pixel, &vars.west.line_length, &vars.west.endian);
-    
+
     /*
     draw_line(vars.player.pos.x - 50, vars.player.pos.y, vars.player.pos.x + 50 , vars.player.pos.y, &vars, GREEN);
     draw_line(vars.player.pos.x, vars.player.pos.y - 50, vars.player.pos.x, vars.player.pos.y + 50, &vars, GREEN);

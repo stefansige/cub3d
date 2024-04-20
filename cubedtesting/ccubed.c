@@ -26,11 +26,11 @@ int main()
         printf("Error\n");
         exit(1);
     }
-    for (int v = 0; v < 1024; v+= 2)
+    for (int v = 0; v < 1024; v++)
     {
-        for (int h = 0; h < 1024; h+= 2)
+        for (int h = 0; h < 1024; h++)
         {
-            mlx_pixel_put(mlx, win, h / 2, v / 2, RED);
+            mlx_pixel_put(mlx, win, h, v, *(unsigned int *)(data + (v * line_length) + (h * (bpp / 8))));
         }
     }
     mlx_loop(mlx);
