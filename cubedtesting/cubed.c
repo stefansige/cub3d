@@ -192,7 +192,7 @@ void ft_display(t_vars *vars, double raydist, t_ray *ray, int raynum, int orient
     else if (y_end > 800)
         y_end = 800;
     t_image *img;
-    int scale;
+    double scale;
 
     int start = raynum * 10;
     int end = raynum * 10 + 10;
@@ -214,7 +214,7 @@ void ft_display(t_vars *vars, double raydist, t_ray *ray, int raynum, int orient
     {
         img = &vars->east;
     }
-    scale = img->img_height / linelen;
+    scale = (double)img->img_height / linelen;
     while (start < end)
     {
         for (int j = y_start; j < y_end; j++)
