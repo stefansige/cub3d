@@ -1,13 +1,13 @@
 {
     "version": "0.2.0",
     "configurations": [
-    
+
         {
             "name": "C Debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/so_long", // Replace 'your_executable' with the name of your compiled executable file
-            "args": [], // Add command-line arguments if your program requires any
+            "args": ["map.cub"], // Add command-line arguments if your program requires any
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
