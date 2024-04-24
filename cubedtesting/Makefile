@@ -1,4 +1,4 @@
-NAME = so_long
+NAME = cub3d
 CC = gcc
 CFLAGS = -g
 LDLIBS = -L./minilibx-linux -lmlx_Linux -lXext -lX11 -lm
