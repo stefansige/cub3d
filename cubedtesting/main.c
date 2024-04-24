@@ -75,7 +75,7 @@ typedef struct s_disvars
 	double imgy;
 }			  t_disvars;
 
-float ft_fixangle(float angle)
+float	ft_fixangle(float angle)
 {
 	angle = fmod(angle, 360.0f);
 	if (angle < 0.0f)
@@ -85,9 +85,10 @@ float ft_fixangle(float angle)
 
 float	angleDifference(float playerangle, float rayangle)
 {
-	float diff = fabsf(playerangle - rayangle);
-	diff = fmodf(diff, 360.0f);
+	float diff;;
 
+	diff = fabsf(playerangle - rayangle);
+	diff = fmodf(diff, 360.0f);
 	if (diff > 180.0f)
 	{
 		diff = 360.0f - diff;
@@ -95,11 +96,11 @@ float	angleDifference(float playerangle, float rayangle)
 	return (diff);
 }
 
-double torad(double angle)
+double	torad(double angle)
 {
 	return (angle * M_PI / 180.0);
 }
-void ft_movepoint(double *x, double *y, float angle_degrees, int distance)
+void	ft_movepoint(double *x, double *y, float angle_degrees, int distance)
 {
 	double	new_x;
 	double	new_y;
@@ -122,7 +123,7 @@ int	ft_checkcollision(t_vars *vars, double x, double y, float angle)
 	return (1);
 }
 
-void ft_free(int **map)
+void	ft_free(int **map)
 {
 	int	i;
 
@@ -135,7 +136,7 @@ void ft_free(int **map)
 	free(map);
 }
 
-void ft_exit(t_vars *vars, char *str)
+void	ft_exit(t_vars *vars, char *str)
 {
 	printf("%s", str);
 	if (vars->north.img != NULL)
@@ -161,7 +162,7 @@ void ft_exit(t_vars *vars, char *str)
 	exit(0);
 }
 
-int ft_key(int keycode, t_vars *vars)
+int	ft_key(int keycode, t_vars *vars)
 {
 	if (keycode == 0xff1b)
 		ft_exit(vars, "Bye bye\n");
@@ -188,7 +189,7 @@ int ft_key(int keycode, t_vars *vars)
 	return (0);
 }
 
-t_image *ft_getimg(t_vars *vars, int orientation)
+t_image	*ft_getimg(t_vars *vars, int orientation)
 {
 	if (orientation == 1)
 		return (&vars->north);
@@ -201,7 +202,7 @@ t_image *ft_getimg(t_vars *vars, int orientation)
 	return (NULL);
 }
 
-void ft_display(t_vars *vars, t_ray *ray, float raynum)
+void	ft_display(t_vars *vars, t_ray *ray, float raynum)
 {
 	t_disvars d;
 
@@ -226,11 +227,11 @@ void ft_display(t_vars *vars, t_ray *ray, float raynum)
 	}
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->ceiling.img, d.screenx, d.y_start - 400);
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->floor.img, d.screenx, d.y_end);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->ceiling.img, d.screenx+1, d.y_start - 400);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->floor.img, d.screenx+1, d.y_end);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->ceiling.img, d.screenx +1, d.y_start - 400);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->floor.img, d.screenx +1, d.y_end);
 }
 
-void ft_checkhit90(t_ray *ray, int **worldMap)
+void	ft_checkhit90(t_ray *ray, int **worldMap)
 {
 	if (worldMap[((int)ray->pos.x - 1) / 100][(int)ray->pos.y / 100] == 1)
 	{
@@ -253,7 +254,7 @@ void ft_checkhit90(t_ray *ray, int **worldMap)
 	}
 }
 
-void ft_checkhit180(t_ray *ray, int **worldMap)
+void	ft_checkhit180(t_ray *ray, int **worldMap)
 {
 	if (worldMap[((int)ray->pos.x - 1) / 100][(int)(ray->pos.y - 1) / 100] == 1)
 	{
@@ -275,7 +276,7 @@ void ft_checkhit180(t_ray *ray, int **worldMap)
 	}
 }
 
-void ft_checkhit270(t_ray *ray, int **worldMap)
+void	ft_checkhit270(t_ray *ray, int **worldMap)
 {
 	if (worldMap[((int)ray->pos.x - 1) / 100][((int)ray->pos.y) / 100] == 1)
 	{
@@ -297,7 +298,7 @@ void ft_checkhit270(t_ray *ray, int **worldMap)
 	}
 }
 
-void ft_checkhit360(t_ray *ray, int **worldMap)
+void	ft_checkhit360(t_ray *ray, int **worldMap)
 {
 	if (worldMap[(int)ray->pos.x / 100][((int)ray->pos.y) / 100] == 1)
 	{
@@ -318,7 +319,8 @@ void ft_checkhit360(t_ray *ray, int **worldMap)
 		ray->imgx = fmod(ray->pos.x, 100.0);
 	}
 }
-void ft_ray90(t_ray *ray, int **map)
+
+void	ft_ray90(t_ray *ray, int **map)
 {
 	ray->rx = 100.0 - fmod(ray->pos.x, 100.0);
 	ray->ry = 100.0 - fmod(ray->pos.y, 100.0);
@@ -336,7 +338,8 @@ void ft_ray90(t_ray *ray, int **map)
 	}
 	ft_checkhit90(ray, map);
 }
-void ft_ray180(t_ray *ray, int **map)
+
+void	ft_ray180(t_ray *ray, int **map)
 {
 	ray->rx = fmod(ray->pos.x, 100.0);
 	ray->ry = 100.0 - fmod(ray->pos.y, 100.0);
@@ -356,7 +359,8 @@ void ft_ray180(t_ray *ray, int **map)
 	}
 	ft_checkhit180(ray, map);
 }
-void ft_ray270(t_ray *ray, int **map)
+
+void	ft_ray270(t_ray *ray, int **map)
 {
 	ray->rx = fmod(ray->pos.x, 100.0);
 	ray->ry = fmod(ray->pos.y, 100.0);
@@ -378,7 +382,8 @@ void ft_ray270(t_ray *ray, int **map)
 	}
 	ft_checkhit270(ray, map);
 }
-void ft_ray360(t_ray *ray, int **map)
+
+void	ft_ray360(t_ray *ray, int **map)
 {
 	ray->rx = 100.0 - fmod(ray->pos.x, 100.0);
 	ray->ry = fmod(ray->pos.y, 100.0);
@@ -399,7 +404,7 @@ void ft_ray360(t_ray *ray, int **map)
 	ft_checkhit360(ray, map);
 }
 
-void rays_init(t_ray *ray, t_vars *vars)
+void	rays_init(t_ray *ray, t_vars *vars)
 {
 	ray->pos.x = vars->player.pos.x;
 	ray->pos.y = vars->player.pos.y;
@@ -407,7 +412,7 @@ void rays_init(t_ray *ray, t_vars *vars)
 	ray->hip = 0;
 }
 
-int ft_rays(t_vars *vars)
+int	ft_rays(t_vars *vars)
 {
 	t_ray ray;
 
@@ -436,7 +441,7 @@ int ft_rays(t_vars *vars)
 	return (0);
 }
 
-void fill_image_with_color(t_image *img, unsigned int color)
+void	fill_image_with_color(t_image *img, unsigned int color)
 {
 	int		y;
 	char	*dst;
@@ -447,7 +452,8 @@ void fill_image_with_color(t_image *img, unsigned int color)
 		*(unsigned int *)dst = color;
 	}
 }
-void ft_init(t_vars *v)
+
+void	ft_init(t_vars *v)
 {
 	v->ceilingcolor = 0;
 	v->floorcolor = 0;
@@ -468,22 +474,20 @@ void ft_init(t_vars *v)
 
 int	**createMap(int rows, int cols)
 {
-	// Allocate memory for an array of row pointers
-	int **map = (int **)malloc(rows * sizeof(int *));
+	int		**map;
+
+	map = (int **)malloc(rows * sizeof(int *));
 	if (map == NULL)
 	{
 		fprintf(stderr, "Memory allocation failed.\n");
-		return NULL;
+		return (NULL);
 	}
-
-	// Allocate memory for each row
 	for (int i = 0; i < rows; i++)
 	{
 		map[i] = (int *)malloc(cols * sizeof(int));
-		if (map[i] == NULL) {
+		if (map[i] == NULL)
+		{
 			fprintf(stderr, "Memory allocation failed.\n");
-
-			// Free previously allocated memory
 			for (int j = 0; j < i; j++)
 			{
 				free(map[j]);
@@ -506,7 +510,7 @@ int	**createMap(int rows, int cols)
 	return (map);
 }
 
-void ft_checkfile(char *file)
+void	ft_checkfile(char *file)
 {
 	int		i;
 
