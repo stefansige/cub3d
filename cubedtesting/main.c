@@ -9,71 +9,73 @@
 #define HEIGHT 800
 #define BUFFER_SIZE 4096
 
-
-typedef struct s_point {
+typedef struct s_point
+{
 	double	x;
 	double	y;
-}			  t_point;
-
+}	t_point;
 
 typedef struct s_player
 {
-	t_point pos;
-	float dir;
-}			  t_player;
+	t_point		pos;
+	float		dir;
+}				t_player;
 
-typedef struct s_image {
-	void *img;
-	char *addr;
-	int bits_per_pixel;
-	int line_length;
-	int endian;
-	int img_width;
-	int img_height;
-}			  t_image;
+typedef struct s_image
+{
+	void		*img;
+	char		*addr;
+	int			bits_per_pixel;
+	int			line_length;
+	int			endian;
+	int			img_width;
+	int			img_height;
+}	t_image;
 
-typedef struct s_vars {
-	void *mlx;
-	void *win;
-	t_image north;
-	t_image south;
-	t_image east;
-	t_image west;
-	t_image floor;
-	t_image ceiling;
-	char *buff;
-	int **map;
-	unsigned int ceilingcolor;
-	unsigned int floorcolor;
-	t_player player;
-}			  t_vars;
+typedef struct s_vars
+{
+	void			*mlx;
+	void			*win;
+	t_image			north;
+	t_image			south;
+	t_image			east;
+	t_image			west;
+	t_image			floor;
+	t_image			ceiling;
+	char			*buff;
+	int				**map;
+	unsigned int	ceilingcolor;
+	unsigned int	floorcolor;
+	t_player		player;
+}	t_vars;
 
-typedef struct s_ray {
-	t_point pos;
-	float dir;
-	double hip;
-	int orientation;
-	double rx;
-	double ry;
-	double hipx;
-	double hipy;
-	double imgx;
-	int hit;
-	float planeangle;
-	double perpwalldist;
-}			  t_ray;
+typedef struct s_ray
+{
+	t_point		pos;
+	float		dir;
+	double		hip;
+	int			orientation;
+	double		rx;
+	double		ry;
+	double		hipx;
+	double		hipy;
+	double		imgx;
+	int			hit;
+	float		planeangle;
+	double		perpwalldist;
+}	t_ray;
 
 typedef struct s_disvars
 {
-	int linelen;
-	unsigned int y_start;
-	unsigned int y_end;
-	t_image *img;
-	double yadd;
-	int screenx;
-	int color;
-	double imgy;
-}			  t_disvars;
+	int				linelen;
+	unsigned int	y_start;
+	unsigned int	y_end;
+	t_image			*img;
+	double			yadd;
+	int				screenx;
+	int				color;
+	double			imgy;
+}	t_disvars;
 
 float	ft_fixangle(float angle)
 {
@@ -85,7 +87,7 @@ float	ft_fixangle(float angle)
 
 float	angleDifference(float playerangle, float rayangle)
 {
-	float diff;;
+	float	diff;
 
 	diff = fabsf(playerangle - rayangle);
 	diff = fmodf(diff, 360.0f);
@@ -100,6 +102,7 @@ double	torad(double angle)
 {
 	return (angle * M_PI / 180.0);
 }
+
 void	ft_movepoint(double *x, double *y, float angle_degrees, int distance)
 {
 	double	new_x;
@@ -178,13 +181,17 @@ int	ft_key(int keycode, t_vars *vars)
 	}
 	if (keycode == 0xff52)
 	{
-		if (ft_checkcollision(vars, vars->player.pos.x, vars->player.pos.y, vars->player.dir))
-			ft_movepoint(&vars->player.pos.x, &vars->player.pos.y, vars->player.dir, 50);
+		if (ft_checkcollision(vars, vars->player.pos.x, \
+			vars->player.pos.y, vars->player.dir))
+			ft_movepoint(&vars->player.pos.x, \
+			&vars->player.pos.y, vars->player.dir, 50);
 	}
 	if (keycode == 0xff54)
 	{
-		if (ft_checkcollision(vars, vars->player.pos.x, vars->player.pos.y, ft_fixangle(vars->player.dir - 180)))
-			ft_movepoint(&vars->player.pos.x, &vars->player.pos.y, vars->player.dir + 180, 50);
+		if (ft_checkcollision(vars, vars->player.pos.x, \
+		vars->player.pos.y, ft_fixangle(vars->player.dir - 180)))
+			ft_movepoint(&vars->player.pos.x, \
+			&vars->player.pos.y, vars->player.dir + 180, 50);
 	}
 	return (0);
 }
@@ -204,7 +211,7 @@ t_image	*ft_getimg(t_vars *vars, int orientation)
 
 void	ft_display(t_vars *vars, t_ray *ray, float raynum)
 {
-	t_disvars d;
+	t_disvars	d;
 
 	ray->perpwalldist = ray->hip * cos(torad(ray->planeangle));
 	d.linelen = round(50000 / ray->perpwalldist);
@@ -213,22 +220,27 @@ void	ft_display(t_vars *vars, t_ray *ray, float raynum)
 	d.y_start = 400 - (d.linelen / 2);
 	d.y_end = 400 + (d.linelen / 2);
 	d.imgy = 0.0;
-
 	d.img = ft_getimg(vars, ray->orientation);
 	d.yadd = (double)d.img->img_height / (double)d.linelen;
-	ray->imgx = round(ray->imgx * ((double)d.img->img_width / 100.0)) * (d.img->bits_per_pixel / 8);
+	ray->imgx = round(ray->imgx * ((double)d.img->img_width \
+	/ 100.0)) * (d.img->bits_per_pixel / 8);
 	d.screenx = round(raynum * 10);
 	for (int j = d.y_start; j < d.y_end; j++)
 	{
-		d.color = *(unsigned int *)(d.img->addr + (int)((int)d.imgy * d.img->line_length) + (int)ray->imgx);
+		d.color = *(unsigned int *)(d.img->addr + \
+		(int)((int)d.imgy * d.img->line_length) + (int)ray->imgx);
 		mlx_pixel_put(vars->mlx, vars->win, d.screenx, j, d.color);
 		mlx_pixel_put(vars->mlx, vars->win, d.screenx + 1, j, d.color);
 		d.imgy += d.yadd;
 	}
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->ceiling.img, d.screenx, d.y_start - 400);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->floor.img, d.screenx, d.y_end);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->ceiling.img, d.screenx +1, d.y_start - 400);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->floor.img, d.screenx +1, d.y_end);
+	mlx_put_image_to_window(vars->mlx, vars->win, \
+	vars->ceiling.img, d.screenx, d.y_start - 400);
+	mlx_put_image_to_window(vars->mlx, vars->win, \
+	vars->floor.img, d.screenx, d.y_end);
+	mlx_put_image_to_window(vars->mlx, vars->win, \
+	vars->ceiling.img, d.screenx +1, d.y_start - 400);
+	mlx_put_image_to_window(vars->mlx, vars->win, \
+	vars->floor.img, d.screenx +1, d.y_end);
 }
 
 void	ft_checkhit90(t_ray *ray, int **worldMap)
@@ -238,7 +250,6 @@ void	ft_checkhit90(t_ray *ray, int **worldMap)
 		ray->hit = 1;
 		ray->orientation = 3;
 		ray->imgx = 100.0 - fmod(ray->pos.x, 100.0);
-
 	}
 	else if (worldMap[(int)ray->pos.x / 100][((int)ray->pos.y - 1) / 100] == 1)
 	{
@@ -268,7 +279,8 @@ void	ft_checkhit180(t_ray *ray, int **worldMap)
 		ray->orientation = 3;
 		ray->imgx = 100.0 - fmod(ray->pos.x, 100.0);
 	}
-	else if (worldMap[(int)(ray->pos.x - 1) / 100][(int)(ray->pos.y) / 100] == 1)
+	else if (worldMap[(int)(ray->pos.x - 1) \
+	/ 100][(int)(ray->pos.y) / 100] == 1)
 	{
 		ray->hit = 1;
 		ray->orientation = 3;
@@ -284,13 +296,15 @@ void	ft_checkhit270(t_ray *ray, int **worldMap)
 		ray->orientation = 4;
 		ray->imgx = 100.0 - fmod(ray->pos.y, 100.0);
 	}
-	else if (worldMap[((int)ray->pos.x) / 100][((int)ray->pos.y - 1) / 100] == 1)
+	else if (worldMap[((int)ray->pos.x) \
+	/ 100][((int)ray->pos.y - 1) / 100] == 1)
 	{
 		ray->hit = 1;
 		ray->orientation = 1;
 		ray->imgx = fmod(ray->pos.x, 100.0);
 	}
-	else if (worldMap[((int)ray->pos.x - 1) / 100][((int)ray->pos.y - 1) / 100] == 1)
+	else if (worldMap[((int)ray->pos.x - 1) \
+	/ 100][((int)ray->pos.y - 1) / 100] == 1)
 	{
 		ray->hit = 1;
 		ray->orientation = 4;
@@ -306,13 +320,15 @@ void	ft_checkhit360(t_ray *ray, int **worldMap)
 		ray->orientation = 2;
 		ray->imgx = fmod(ray->pos.y, 100.0);
 	}
-	else if (worldMap[(int)(ray->pos.x - 1) / 100][((int)ray->pos.y - 1) / 100] == 1)
+	else if (worldMap[(int)(ray->pos.x - 1) \
+	/ 100][((int)ray->pos.y - 1) / 100] == 1)
 	{
 		ray->hit = 1;
 		ray->orientation = 1;
 		ray->imgx = fmod(ray->pos.x, 100.0);
 	}
-	else if (worldMap[(int)(ray->pos.x) / 100][(int)(ray->pos.y - 1) / 100] == 1)
+	else if (worldMap[(int)(ray->pos.x) \
+	/ 100][(int)(ray->pos.y - 1) / 100] == 1)
 	{
 		ray->hit = 1;
 		ray->orientation = 1;
@@ -414,7 +430,7 @@ void	rays_init(t_ray *ray, t_vars *vars)
 
 int	ft_rays(t_vars *vars)
 {
-	t_ray ray;
+	t_ray	ray;
 
 	for (float i = 0; i < 80.0f; i += 0.2f)
 	{
@@ -517,7 +533,8 @@ void	ft_checkfile(char *file)
 	i = 0;
 	while (file[i])
 		i++;
-	if (file[i - 1] != 'b' || file[i - 2] != 'u' || file[i - 3] != 'c' || file[i - 4] != '.')
+	if (file[i - 1] != 'b' || file[i - 2] != 'u' \
+	|| file[i - 3] != 'c' || file[i - 4] != '.')
 	{
 		printf("Invalid file\n");
 		exit(0);
@@ -619,7 +636,8 @@ int	ft_put(t_image *img, char *buff, int i, t_vars *v)
 	while (buff[j] != '\n' && buff[j] != '\0')
 		j++;
 	tmp = substring(buff, i, j - 1);
-	img->img = mlx_xpm_file_to_image(v->mlx, tmp, &img->img_width, &img->img_height);
+	img->img = mlx_xpm_file_to_image(v->mlx, tmp, \
+	&img->img_width, &img->img_height);
 	if (img->img == NULL)
 	{
 		printf("Invalid texture\n");
@@ -627,7 +645,8 @@ int	ft_put(t_image *img, char *buff, int i, t_vars *v)
 		free(buff);
 		exit(0);
 	}
-	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length, &img->endian);
+	img->addr = mlx_get_data_addr(img->img, \
+	&img->bits_per_pixel, &img->line_length, &img->endian);
 	free(tmp);
 	return (j);
 }
@@ -749,7 +768,8 @@ int	ft_parsevars(t_vars *vars, char *buff)
 
 void	ft_checkparse(t_vars *vars, char *buff)
 {
-	if (vars->north.img == NULL || vars->south.img == NULL || vars->east.img == NULL || vars->west.img == NULL)
+	if (vars->north.img == NULL || vars->south.img == NULL \
+	|| vars->east.img == NULL || vars->west.img == NULL)
 	{
 		printf("Missing texture\n");
 		free(buff);
@@ -796,7 +816,8 @@ int	ft_checkifend(char *buff, int i)
 
 int	ft_allowedchar(char c)
 {
-	if (c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W' || c == ' ' || c == '\n')
+	if (c == '0' || c == '1' || c == 'N' \
+	|| c == 'S' || c == 'E' || c == 'W' || c == ' ' || c == '\n')
 		return (1);
 	return (0);
 }
@@ -874,7 +895,8 @@ void	ft_setmap(t_vars *vars, char *buff, int i)
 			vars->map[y][x] = 3;
 		else if (buff[i] == '1' || buff[i] == '0')
 			vars->map[y][x] = buff[i] - '0';
-		else if (buff[i] == 'N' || buff[i] == 'S' || buff[i] == 'E' || buff[i] == 'W')
+		else if (buff[i] == 'N' || buff[i] == 'S' \
+		|| buff[i] == 'E' || buff[i] == 'W')
 		{
 			vars->map[y][x] = 0;
 			ft_setplayer(vars, buff[i], x, y);
@@ -949,8 +971,11 @@ int	main(int argc, char **argv)
 	vars.win = mlx_new_window(vars.mlx, WIDTH, HEIGHT, "Cuba3D");
 	vars.ceiling.img = mlx_new_image(vars.mlx, 1, 400);
 	vars.floor.img = mlx_new_image(vars.mlx, 1, 400);
-	vars.ceiling.addr = mlx_get_data_addr(vars.ceiling.img, &vars.ceiling.bits_per_pixel, &vars.ceiling.line_length, &vars.ceiling.endian);
-	vars.floor.addr = mlx_get_data_addr(vars.floor.img, &vars.floor.bits_per_pixel, &vars.floor.line_length, &vars.floor.endian);
+	vars.ceiling.addr = mlx_get_data_addr(vars.ceiling.img, \
+	&vars.ceiling.bits_per_pixel, \
+	&vars.ceiling.line_length, &vars.ceiling.endian);
+	vars.floor.addr = mlx_get_data_addr(vars.floor.img, \
+	&vars.floor.bits_per_pixel, &vars.floor.line_length, &vars.floor.endian);
 	fill_image_with_color(&vars.ceiling, vars.ceilingcolor);
 	fill_image_with_color(&vars.floor, vars.floorcolor);
 	mlx_hook(vars.win, 2, 1L << 0, ft_key, &vars);
