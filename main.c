@@ -9,7 +9,7 @@
 #define HEIGHT 800
 #define BUFFER_SIZE 4096
 
-typedef struct s_point 
+typedef struct s_point
 {
 	double	x;
 	double	y;
@@ -21,7 +21,7 @@ typedef struct s_player
 	float	dir;
 }	t_player;
 
-typedef struct s_image 
+typedef struct s_image
 {
 	void	*img;
 	char	*addr;
@@ -32,7 +32,7 @@ typedef struct s_image
 	int		img_height;
 }	t_image;
 
-typedef struct s_vars 
+typedef struct s_vars
 {
 	void			*mlx;
 	void			*win;
@@ -49,7 +49,7 @@ typedef struct s_vars
 	t_player		player;
 }	t_vars;
 
-typedef struct s_ray 
+typedef struct s_ray
 {
 	t_point		pos;
 	float		dir;
@@ -944,25 +944,6 @@ void	ft_parse(t_vars *vars, char *file)
 	ft_floodfill(vars, vars->player.pos.x / 100, vars->player.pos.y / 100);
 }
 
-void	ft_printfmap(int **map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (map[i])
-	{
-		j = 0;
-		while (map[i][j])
-		{
-			printf("%d", map[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-}
-
 int	main(int argc, char **argv)
 {
 	t_vars	v;
@@ -974,7 +955,6 @@ int	main(int argc, char **argv)
 	}
 	ft_init(&v);
 	ft_parse(&v, argv[1]);
-	ft_printfmap(v.map);
 	v.win = mlx_new_window(v.mlx, WIDTH, HEIGHT, "Cuba3D");
 	v.ceiling.img = mlx_new_image(v.mlx, 1, 400);
 	v.floor.img = mlx_new_image(v.mlx, 1, 400);
